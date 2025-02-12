@@ -1,14 +1,14 @@
-import axios, { AxiosResponse } from 'axios';
-import { useAuthStore } from '../zustand-store/authStore';
-import { StatusCodeEnum } from './types';
-import { logout } from './authService';
+import axios, { AxiosResponse } from "axios";
+import { useAuthStore } from "../zustand-store/authStore";
+import { StatusCodeEnum } from "./types";
+import { logout } from "./authService";
 
 const api = axios.create({
-    baseURL: 'https://cogniia.com.br:3000/',
+    baseURL: "https://cogniia.com.br:3000/",
     headers: {
-        "Content-Type": 'application/json',
-        'Access-Control-Allow-Origin': '*'
-    }
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+    },
 });
 
 api.interceptors.request.use((config) => {
@@ -25,20 +25,20 @@ api.interceptors.response.use(
     },
     (error) => {
         if (error.response.status === StatusCodeEnum.UNAUTHORIZED) {
-            console.log(error.response.status)
+            console.log(error.response.status);
             logout();
             window.location.reload();
         }
         return Promise.reject(error);
-    }
+    },
 );
 
 const apiAI = axios.create({
-    baseURL: 'https://cogniia-ai.onrender.com',
+    baseURL: process.env.AI_URL,
     headers: {
-        "Content-Type": 'application/json',
-        'Access-Control-Allow-Origin': '*'
-    }
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+    },
 });
 
 export { api, apiAI };
