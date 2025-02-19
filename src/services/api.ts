@@ -3,15 +3,15 @@ import { useAuthStore } from "../zustand-store/authStore";
 import { StatusCodeEnum } from "./types";
 import { logout } from "./authService";
 
-const api = axios.create({
-    baseURL: "https://cogniia.com.br:3000/",
+const coreApi = axios.create({
+    baseURL: process.env.CORE_API_URL,
     headers: {
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin": "*",
     },
 });
 
-api.interceptors.request.use((config) => {
+coreApi.interceptors.request.use((config) => {
     const token = useAuthStore.getState().user?.token;
     if (token) {
         config.headers.Authorization = `Bearer ${token}`;
@@ -19,7 +19,7 @@ api.interceptors.request.use((config) => {
     return config;
 });
 
-api.interceptors.response.use(
+coreApi.interceptors.response.use(
     async (response: AxiosResponse) => {
         return response;
     },
@@ -41,4 +41,4 @@ const apiAI = axios.create({
     },
 });
 
-export { api, apiAI };
+export { coreApi, apiAI };

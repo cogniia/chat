@@ -1,52 +1,77 @@
-import { useAuthStore, User } from '@/zustand-store/authStore';
-import { useChatStore } from '@/zustand-store/chatStore';
-import { api } from './api';
-import Cookie from 'js-cookie';
-import { LoginRequest, LoginResponse, RecoveryPasswordRequest, RegisterRequest, RegisterResponse } from './types';
-import { encryptPassword } from '@/lib/utils';
+import { useAuthStore, User } from "@/zustand-store/authStore";
+import { useChatStore } from "@/zustand-store/chatStore";
+import { coreApi } from "./api";
+import Cookie from "js-cookie";
+import { LoginRequest, LoginResponse, RegisterRequest } from "./types";
 
-export const login = async ({ email, password }: LoginRequest): Promise<void> => {
+export const login = async ({
+    email,
+    password,
+}: LoginRequest): Promise<void> => {
     try {
-        const response = await api.post<LoginResponse>('/login', { email, password });
-        const data = { ...response.data.body, password }
+        const { token, refresh_token } = (
+            await coreApi.post<LoginResponse>("/user/auth/token", {
+                email,
+                password,
+            })
+        ).data;
+        const data = {
+            token,
+            sessionIds: [],
+        };
 
-        let user: User = data;
-        user.password = await encryptPassword(password);
+        useAuthStore.getState().setCurrentUserData(data);
 
-        useAuthStore.getState().setCurrentUser(user);
-
-        Cookie.set('token', user.token ?? '');
+        Cookie.set("token", token ?? "");
+        Cookie.set("refresh_token", refresh_token ?? "");
     } catch (error) {
-        console.error('Erro ao fazer login', error);
+        console.error("Erro ao fazer login", error);
         throw error;
     }
 };
 
-export const register = async ({ nome, email, password }: RegisterRequest): Promise<void> => {
+export const me = async (): Promise<void> => {
     try {
-        const response = await api.post<RegisterResponse>('/user', { nome, email, password });
-        const user = response.data.body;
+        const response = await coreApi.get<User>("/user/me");
+
+        useAuthStore.getState().setCurrentUser(response.data);
+    } catch (error) {
+        console.error("Erro ao buscar usuário", error);
+        throw error;
+    }
+};
+
+// Registers a new user and logs them
+export const register = async ({
+    name,
+    email,
+    password,
+}: RegisterRequest): Promise<void> => {
+    try {
+        const user = (
+            await coreApi.post<User>("/user", {
+                name,
+                email,
+                password,
+            })
+        ).data;
 
         await login({ email: user.email, password });
-
     } catch (error) {
-        console.error('Erro ao fazer login', error);
+        console.error("Erro ao fazer login", error);
         throw error;
     }
 };
 
-export function forgotPassword(email: string) {
-    return api.put('/forgetPassword', { email })
-}
-
-export function recoveryPassword(user: RecoveryPasswordRequest) {
-    return api.put('/recoveryPassword', user)
+// Old name is forgotPassword
+export function resetPassword(email: string) {
+    return coreApi.post("/user/auth/reset-password", { email });
 }
 
 export const logout = (): void => {
     useAuthStore.getState().clearCurrentUser();
-    useChatStore.getState().clearData()
+    useAuthStore.getState().clearCurrentUserData();
+    useChatStore.getState().clearData();
 
-    Cookie.remove('token');
-
+    Cookie.remove("token");
 };
