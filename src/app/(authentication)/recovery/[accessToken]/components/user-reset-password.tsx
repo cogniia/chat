@@ -1,20 +1,12 @@
 "use client";
 
 import * as React from "react";
-
 import { cn, validatePassword } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { AlertComponent } from "./alert";
-import { RecoveryPasswordRequest } from "@/services/types";
 import { login, me, updateMe } from "@/services/authService";
-import {
-    InputOTP,
-    InputOTPGroup,
-    InputOTPSeparator,
-    InputOTPSlot,
-} from "@/components/ui/input-otp";
 import { useParams, useRouter } from "next/navigation";
 import { AlertDialogComponent } from "@/components/alertComponent";
 import Cookies from "js-cookie";
@@ -33,7 +25,6 @@ export function UserResetPasswordForm({
     const [showError, setShowError] = React.useState<boolean>(false);
 
     const { accessToken } = useParams();
-    const [token] = React.useState<string>("");
     const [password, setPassword] = React.useState<string>("");
     const [passwordConfirmation, setPasswordConfirmation] =
         React.useState<string>("");
@@ -168,7 +159,7 @@ export function UserResetPasswordForm({
                         isLoading ||
                         !validatePassword(password, passwordConfirmation)
                             .isValid ||
-                        !token
+                        password !== passwordConfirmation
                     }
                     isLoading={isLoading}
                     label="Confirmar nova senha"
