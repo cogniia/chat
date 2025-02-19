@@ -41,6 +41,15 @@ export const me = async (): Promise<void> => {
     }
 };
 
+export const updateMe = async (data: Partial<User>): Promise<void> => {
+    try {
+        await coreApi.put<Partial<User>>("/user/me", data);
+    } catch (error) {
+        console.error("Erro ao atualizar usuário", error);
+        throw error;
+    }
+};
+
 // Registers a new user and logs them
 export const register = async ({
     name,

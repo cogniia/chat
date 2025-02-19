@@ -1,16 +1,9 @@
-import { api } from "./api";
-import { ChangePasswordRequest } from "./types";
+import { coreApi } from "./api";
 
 export function userDetailService(idUser: string) {
-    return api.get(`/user?id=${idUser}`)
+    return coreApi.get(`/user/me`);
 }
 
-export function changePasswordService(idUser: ChangePasswordRequest) {
-    return api.put('/changePassword', idUser)
-}
-
-export function deleteUserService(idUser?: string) {
-    return api.delete(`/user`, {
-        params: { id: idUser }
-    })
+export function deleteUserService() {
+    return coreApi.delete(`/user/me`);
 }
