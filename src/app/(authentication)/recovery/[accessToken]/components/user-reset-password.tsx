@@ -54,7 +54,7 @@ export function UserResetPasswordForm({
                     email: useAuthStore.getState().user?.email || "",
                     password,
                 }).then(() => router.refresh());
-            }, 1000);
+            });
         } catch (ex: any) {
             setApiMessageResponse(ex?.response?.data?.message);
             setShowError(true);
