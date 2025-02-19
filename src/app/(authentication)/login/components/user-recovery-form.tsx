@@ -15,7 +15,6 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { validateEmail } from "@/lib/utils";
 import Image from "next/image";
-import Link from "next/link";
 import { resetPassword } from "@/services/authService";
 
 interface UserRecoveryFormProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -150,12 +149,13 @@ export function UserRecoveryForm({
                 <div
                     className={`${!showOTP && "hidden"} w-full flex flex-col gap-4 items-center max-w-80 justify-center mb-4`}
                 >
-                    <Link href={`/recovery/${email}`}>
-                        <Button
-                            disabled={!validateEmail(email)}
-                            label="Próximo"
-                        />
-                    </Link>
+                    <Button
+                        disabled={!validateEmail(email)}
+                        label="Tudo bem!"
+                        onClick={() => {
+                            setShowOTP(false);
+                        }}
+                    />
                 </div>
                 <AlertDialogFooter className="mt-4">
                     <AlertDialogCancel
