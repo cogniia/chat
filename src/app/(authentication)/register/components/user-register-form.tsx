@@ -45,7 +45,11 @@ export function UserRegisterForm({
                 router.refresh();
             })
             .catch((ex) => {
-                setApiMessageResponse(ex?.response?.data?.message);
+                setApiMessageResponse({
+                    title: "Não conseguimos criar a sua conta. Provavelmente este email já está em uso. Tente novamente ou recupere a sua senha.",
+                    description:
+                        "Provavelmente este email já está em uso. Tente novamente ou recupere a sua senha.",
+                });
                 setIsLoading(false);
                 setShowError(true);
             });
