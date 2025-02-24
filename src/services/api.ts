@@ -41,4 +41,26 @@ const apiAI = axios.create({
     },
 });
 
+apiAI.interceptors.request.use((config) => {
+    const token = useAuthStore.getState().userData?.token;
+    if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+});
+
+apiAI.interceptors.response.use(
+    async (response: AxiosResponse) => {
+        return response;
+    },
+    (error) => {
+        if (error.response.status === StatusCodeEnum.UNAUTHORIZED) {
+            console.log(error.response.status);
+            logout();
+            window.location.reload();
+        }
+        return Promise.reject(error);
+    },
+);
+
 export { coreApi, apiAI };
