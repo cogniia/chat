@@ -1,7 +1,7 @@
 import { useAuthStore } from "@/zustand-store/authStore";
 import { coreApi } from "@/api/api";
 import { Create } from "../model/create.model";
-import { login } from "@/api/auth/service/main";
+import { startAuthCycle } from "@/api/auth/service/main";
 import { User } from "../entity/user.entity";
 
 export const me = async (token?: string): Promise<void> => {
@@ -53,7 +53,7 @@ export async function createUser({
             })
         ).data;
 
-        await login({ email: user.email, password });
+        await startAuthCycle({ email: user.email, password });
     } catch (error) {
         console.error("Erro ao fazer login", error);
         throw error;
