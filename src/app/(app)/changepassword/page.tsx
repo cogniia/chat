@@ -4,9 +4,10 @@ import { BreadcrumbComponent } from "@/components/breadcrumb";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { login, updateMe } from "@/api/authService";
+import { update } from "@/api/user/service/main";
 import { useAuthStore } from "@/zustand-store/authStore";
 import { useState } from "react";
+import { login } from "@/api/auth/service/main";
 
 export default function ChangePassword() {
     const { user } = useAuthStore();
@@ -42,7 +43,7 @@ export default function ChangePassword() {
             return;
         }
 
-        await updateMe({ password: newPassword })
+        await update({ password: newPassword })
             .then(async () => {
                 setTitleDialog("Senha alterada com sucesso!");
                 setDescriptionDialog(

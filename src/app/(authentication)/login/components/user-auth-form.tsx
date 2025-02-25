@@ -1,16 +1,15 @@
 "use client";
 
 import * as React from "react";
-
 import { cn, validateEmail } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { UserRecoveryForm } from "./user-recovery-form";
 import { fadeBackgroundControllStore } from "@/zustand-store/fade-backgroung";
-import { login } from "@/api/authService";
 import { useRouter } from "next/navigation";
 import { AlertToastComponent } from "../../../../components/alert";
+import { login } from "@/api/auth/service/main";
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -130,4 +129,3 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
         </>
     );
 }
-

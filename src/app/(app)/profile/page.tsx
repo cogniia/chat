@@ -2,12 +2,12 @@
 import { AlertDialogComponent } from "@/components/alertComponent";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { logout } from "@/api/authService";
 import { deleteUserService } from "@/api/userService";
 import { useAuthStore } from "@/zustand-store/authStore";
 import { Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { logout } from "@/api/auth/service/main";
 
 export default function Profile() {
     const { user } = useAuthStore();

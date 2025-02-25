@@ -1,7 +1,7 @@
 import axios, { AxiosResponse } from "axios";
 import { useAuthStore } from "../zustand-store/authStore";
 import { StatusCodeEnum } from "./types";
-import { logout } from "./authService";
+import { logout } from "./auth/service/main";
 
 const coreApi = axios.create({
     baseURL: process.env.CORE_API_URL || "https://core-api-msqf.onrender.com",
