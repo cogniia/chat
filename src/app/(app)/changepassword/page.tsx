@@ -4,7 +4,7 @@ import { BreadcrumbComponent } from "@/components/breadcrumb";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { login, updateMe } from "@/services/authService";
+import { login, updateMe } from "@/api/authService";
 import { useAuthStore } from "@/zustand-store/authStore";
 import { useState } from "react";
 

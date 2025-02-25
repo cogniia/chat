@@ -2,8 +2,8 @@
 import { AlertDialogComponent } from "@/components/alertComponent";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { logout } from "@/services/authService";
-import { deleteUserService } from "@/services/userService";
+import { logout } from "@/api/authService";
+import { deleteUserService } from "@/api/userService";
 import { useAuthStore } from "@/zustand-store/authStore";
 import { Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";

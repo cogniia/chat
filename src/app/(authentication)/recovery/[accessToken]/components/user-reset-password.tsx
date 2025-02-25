@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { AlertComponent } from "./alert";
-import { login, me, updateMe } from "@/services/authService";
+import { login, me, updateMe } from "@/api/authService";
 import { useParams, useRouter } from "next/navigation";
 import { AlertDialogComponent } from "@/components/alertComponent";
 import Cookies from "js-cookie";

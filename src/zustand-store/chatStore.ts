@@ -1,5 +1,5 @@
-import { getMessagesHistory, sendMessageToAI } from '@/services/chatService'
-import { IResponseMessageFromAI, IResquestMessageHistory } from '@/services/types'
+import { getMessagesHistory, sendMessageToAI } from '@/api/chatService'
+import { IResponseMessageFromAI, IResquestMessageHistory } from '@/api/types'
 import { create } from 'zustand'
 
 type Store = {

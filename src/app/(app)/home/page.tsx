@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
 import { removeIfWhitespace } from "@/lib/utils";
-import { IResquestMessageHistory } from "@/services/types";
+import { IResquestMessageHistory } from "@/api/types";
 import { useAuthStore } from "@/zustand-store/authStore";
 import { useChatStore } from "@/zustand-store/chatStore";
 import { ArrowUp, Sparkles } from "lucide-react";

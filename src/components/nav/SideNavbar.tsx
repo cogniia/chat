@@ -19,7 +19,7 @@ import { Button } from "../ui/button";
 import { Nav } from "../ui/nav";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
-import { logout } from "@/services/authService";
+import { logout } from "@/api/authService";
 import { useRouter } from "next/navigation";
 import { AlertDialogComponent } from "../alertComponent";
 

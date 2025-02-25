@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { UserRecoveryForm } from "./user-recovery-form";
 import { fadeBackgroundControllStore } from "@/zustand-store/fade-backgroung";
-import { login } from "@/services/authService";
+import { login } from "@/api/authService";
 import { useRouter } from "next/navigation";
 import { AlertToastComponent } from "../../../../components/alert";
 

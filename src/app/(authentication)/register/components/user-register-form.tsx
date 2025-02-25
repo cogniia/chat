@@ -4,7 +4,7 @@ import { cn, validateEmail } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { register } from "@/services/authService";
+import { register } from "@/api/authService";
 import { useRouter } from "next/navigation";
 import { AlertDialogComponent } from "@/components/alertComponent";
 import { AlertComponent } from "../../recovery/[accessToken]/components/alert";
