@@ -1,7 +1,8 @@
-import { useAuthStore, User } from "@/zustand-store/authStore";
+import { useAuthStore } from "@/zustand-store/authStore";
 import { coreApi } from "@/api/api";
 import { Create } from "../model/create.model";
 import { login } from "@/api/auth/service/main";
+import { User } from "../entity/user.entity";
 
 export const me = async (): Promise<void> => {
     try {

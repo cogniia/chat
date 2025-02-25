@@ -1,4 +1,4 @@
-import { useAuthStore, User } from "@/zustand-store/authStore";
+import { useAuthStore } from "@/zustand-store/authStore";
 import { coreApi } from "@/api/api";
 import Cookie from "js-cookie";
 import { LoginRequest } from "@/api/auth/model/login-request.model";
@@ -16,12 +16,8 @@ export const login = async ({
                 password,
             })
         ).data;
-        const data = {
-            token,
-            sessionIds: [],
-        };
 
-        useAuthStore.getState().setCurrentUserData(data);
+        useAuthStore.getState().setTokens({ token, refresh_token });
 
         Cookie.set("token", token ?? "");
         Cookie.set("refresh_token", refresh_token ?? "");
@@ -38,7 +34,7 @@ export function resetPassword(email: string) {
 
 export const logout = (): void => {
     useAuthStore.getState().clearCurrentUser();
-    useAuthStore.getState().clearCurrentUserData();
+    useAuthStore.getState().clearTokens();
     useChatStore.getState().clearData();
 
     Cookie.remove("token");
