@@ -32,6 +32,7 @@ const Home = () => {
         error: sessionError,
         isLoading: isSessionLoading,
         getChatSessions,
+        createChatSession,
         sessions,
     } = useSessionStore();
 
@@ -60,6 +61,9 @@ const Home = () => {
 
     async function handleSendMessage(customPrompt?: string) {
         if (sessions.length <= 0) await getChatSessions();
+
+        if (sessions.length <= 0) {
+        }
 
         const text = customPrompt ?? prompt;
         sendMessage(sessions[0].id, text, scrollToBottom);
