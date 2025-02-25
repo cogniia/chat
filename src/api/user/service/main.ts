@@ -44,3 +44,7 @@ export async function createUser({
         throw error;
     }
 }
+
+export function deleteUser() {
+    return coreApi.delete(`/user/me`);
+}

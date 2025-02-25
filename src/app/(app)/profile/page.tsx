@@ -2,12 +2,12 @@
 import { AlertDialogComponent } from "@/components/alertComponent";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { deleteUserService } from "@/api/userService";
 import { useAuthStore } from "@/zustand-store/authStore";
 import { Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { logout } from "@/api/auth/service/main";
+import { deleteUser } from "@/api/user/service/main";
 
 export default function Profile() {
     const { user } = useAuthStore();
@@ -38,7 +38,7 @@ export default function Profile() {
 
     const handleAction = async () => {
         setIsLoading(true);
-        await deleteUserService()
+        await deleteUser()
             .then(() => {
                 setTitleDialog("Conta excluída com sucesso");
                 setDescriptionDialog(
