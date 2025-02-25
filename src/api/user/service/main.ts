@@ -4,16 +4,30 @@ import { Create } from "../model/create.model";
 import { login } from "@/api/auth/service/main";
 import { User } from "../entity/user.entity";
 
-export const me = async (): Promise<void> => {
+export const me = async (token?: string): Promise<void> => {
     try {
-        const response = await coreApi.get<User>("/user/me");
+        const response = await getMe(token);
 
-        useAuthStore.getState().setCurrentUser(response.data);
+        useAuthStore.getState().setCurrentUser(response);
     } catch (error) {
         console.error("Erro ao buscar usuário", error);
         throw error;
     }
 };
+
+export async function getMe(token?: string): Promise<User> {
+    try {
+        const headers = token
+            ? { Authorization: `Bearer ${token}` }
+            : undefined;
+        const response = (await coreApi.get<User>("/user/me", { headers }))
+            .data;
+        return response;
+    } catch (error) {
+        console.error("Erro ao buscar usuário", error);
+        throw error;
+    }
+}
 
 export const update = async (data: Partial<User>): Promise<void> => {
     try {

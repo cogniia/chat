@@ -58,14 +58,16 @@ const Home = () => {
         );
     })();
 
-    const handleSendMessage = (customPrompt?: string) => {
+    async function handleSendMessage(customPrompt?: string) {
+        if (sessions.length <= 0) await getChatSessions();
+
         const text = customPrompt ?? prompt;
-        sendMessage(undefined, text, scrollToBottom);
+        sendMessage(sessions[0].id, text, scrollToBottom);
 
         setTimeout(() => {
             scrollToBottom();
         }, 500);
-    };
+    }
 
     const scrollToTop = () => {
         topRef.current?.scrollIntoView({ behavior: "smooth" });

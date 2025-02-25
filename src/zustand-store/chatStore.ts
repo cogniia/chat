@@ -57,16 +57,13 @@ export const useChatStore = create<Store>((set) => ({
         set({ isLoading: true, error: false });
 
         try {
-            const messages = await getChatMessages(
-                query,
-                pagination,
-                order,
-                whereDate,
-            );
+            const messages = (
+                await getChatMessages(query, pagination, order, whereDate)
+            ).reverse();
 
             if (currentMessages.length > 0) {
                 set({
-                    messages: [...messages, ...currentMessages],
+                    messages: [...currentMessages, ...messages],
                 });
             } else {
                 set({ messages });
@@ -83,12 +80,15 @@ export const useChatStore = create<Store>((set) => ({
             error: false,
             messages: [
                 ...state.messages,
-                // {
-                //     sender_type: "User",
-                //     session_id: sessionId,
-                //     user_id_ext: "5",
-                //     text: prompt,
-                // },
+                {
+                    id: "",
+                    created_at: new Date(),
+                    updated_at: new Date(),
+                    user_id: "",
+                    session_id: sessionId || "",
+                    sender_type: "User",
+                    text: prompt,
+                },
             ],
         }));
 

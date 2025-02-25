@@ -12,7 +12,7 @@ const coreApi = axios.create({
 });
 
 coreApi.interceptors.request.use((config) => {
-    const token = useAuthStore.getState().userData?.token;
+    const token = useAuthStore.getState().tokens?.token;
     if (token) {
         config.headers.Authorization = `Bearer ${token}`;
     }
@@ -42,7 +42,7 @@ const apiAI = axios.create({
 });
 
 apiAI.interceptors.request.use((config) => {
-    const token = useAuthStore.getState().userData?.token;
+    const token = useAuthStore.getState().tokens?.token;
     if (token) {
         config.headers.Authorization = `Bearer ${token}`;
     }
