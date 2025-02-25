@@ -62,6 +62,9 @@ export function UserRegisterForm({
                 title={apiMessageResponse?.title}
                 description={apiMessageResponse?.description}
                 cancelText={"Começar"}
+                onCancel={() => {
+                    router.push("/");
+                }}
                 isLoading={isLoading}
             />
             <form onSubmit={onSubmit}>

@@ -1,5 +1,9 @@
 import { ChatSession } from "@/api/chat-session/entity/chat-session.entity";
-import { getChatSessions } from "@/api/chat-session/service/main";
+import { Create } from "@/api/chat-session/model/create.model";
+import {
+    createChatSession,
+    getChatSessions,
+} from "@/api/chat-session/service/main";
 import { DateOrder, DateOrderEnum } from "@/api/common/model/date-order.model";
 import { Paginate } from "@/api/common/model/paginate.model";
 import { WhereDate } from "@/api/common/model/where-date.model";
@@ -11,6 +15,10 @@ interface SessionState {
     isLoading: boolean;
     error: boolean;
 
+    createChatSession: (
+        currentSessions?: ChatSession[],
+        payload?: Create,
+    ) => Promise<void>;
     setChatSessions: (sessions: ChatSession[]) => void;
     clearChatSessions: () => void;
 
@@ -32,6 +40,20 @@ export const useSessionStore = create(
             setChatSessions: (sessions: ChatSession[]) =>
                 set(() => ({ sessions: [...sessions] })),
             clearChatSessions: () => set(() => ({ sessions: [] })),
+            createChatSession: async (
+                currentSessions: ChatSession[] = [],
+                payload: Create = {},
+            ) => {
+                set({ isLoading: true, error: false });
+                try {
+                    const session = await createChatSession(payload);
+                    set({ sessions: [...currentSessions, session] });
+                } catch (error) {
+                    set({ error: true });
+                } finally {
+                    set({ isLoading: false });
+                }
+            },
 
             getChatSessions: async (
                 query: Partial<ChatSession> = {},
