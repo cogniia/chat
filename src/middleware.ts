@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getMe } from "./api/user/service/main";
+import { refreshToken } from "./api/auth/service/main";
 
 const unAuthPaths = [
     "/login",
@@ -19,14 +20,16 @@ export default async function middleware(request: NextRequest) {
     const homeURL = new URL("/", request.url);
 
     // If there's no token and the path is not in unAuthPaths, redirect to login.
-    if (!token) {
-        return NextResponse.redirect(signURL);
-    }
+    if (!token) return NextResponse.redirect(signURL);
 
     try {
         await getMe(token);
     } catch (error) {
-        return NextResponse.redirect(signURL);
+        try {
+            await refreshToken();
+        } catch (error) {
+            return NextResponse.redirect(signURL);
+        }
     }
 
     // Allow access to the home page.

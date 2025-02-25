@@ -43,6 +43,18 @@ export async function refreshToken(): Promise<void> {
     }
 }
 
+export async function startAuthCycle({
+    email,
+    password,
+}: LoginRequest): Promise<void> {
+    try {
+        await login({ email, password });
+        setInterval(async () => await refreshToken(), 1000 * 30 * 10);
+    } catch (error) {
+        throw error;
+    }
+}
+
 // Old name is forgotPassword
 export function resetPassword(email: string) {
     return coreApi.post("/user/auth/reset-password", { email });

@@ -5,12 +5,12 @@ import { persist } from "zustand/middleware";
 
 interface AuthState {
     user: User | null;
-    tokens: LoginResponse | null;
+    tokens: Partial<LoginResponse> | null;
 
     setCurrentUser: (user: User) => void;
     clearCurrentUser: () => void;
 
-    setTokens: (tokens: LoginResponse) => void;
+    setTokens: (tokens: Partial<LoginResponse>) => void;
     clearTokens: () => void;
 }
 
@@ -22,7 +22,8 @@ export const useAuthStore = create(
             clearCurrentUser: () => set(() => ({ user: null })),
 
             tokens: null,
-            setTokens: (tokens: LoginResponse) => set(() => ({ tokens })),
+            setTokens: (tokens: Partial<LoginResponse>) =>
+                set(() => ({ tokens })),
             clearTokens: () => set(() => ({ user: null })),
         }),
         {

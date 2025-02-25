@@ -9,7 +9,7 @@ import { UserRecoveryForm } from "./user-recovery-form";
 import { fadeBackgroundControllStore } from "@/zustand-store/fade-backgroung";
 import { useRouter } from "next/navigation";
 import { AlertToastComponent } from "../../../../components/alert";
-import { login } from "@/api/auth/service/main";
+import { startAuthCycle } from "@/api/auth/service/main";
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -37,7 +37,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
     async function onSubmitLogin(event: React.SyntheticEvent) {
         event.preventDefault();
         setIsLoading(true);
-        await login({ email, password })
+        await startAuthCycle({ email, password })
             .then(() => {
                 setIsLoading(false);
                 router.replace("/");
