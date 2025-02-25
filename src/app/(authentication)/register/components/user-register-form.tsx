@@ -4,10 +4,10 @@ import { cn, validateEmail } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { register } from "@/services/authService";
 import { useRouter } from "next/navigation";
 import { AlertDialogComponent } from "@/components/alertComponent";
 import { AlertComponent } from "../../recovery/[accessToken]/components/alert";
+import { createUser } from "@/api/user/service/main";
 
 interface UserRegisterFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -34,7 +34,7 @@ export function UserRegisterForm({
         setIsLoading(true);
         setShowError(false);
 
-        register({ name: name, email, password })
+        createUser({ name: name, email, password })
             .then((response: any) => {
                 setApiMessageResponse({
                     title: "Cadastro concluído com sucesso!",

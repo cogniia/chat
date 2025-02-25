@@ -15,7 +15,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { validateEmail } from "@/lib/utils";
 import Image from "next/image";
-import { resetPassword } from "@/services/authService";
+import { resetPassword } from "@/api/auth/service/main";
 
 interface UserRecoveryFormProps extends React.HTMLAttributes<HTMLDivElement> {
     onOpenChange?: (open: boolean) => void;

@@ -5,30 +5,35 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
 import { removeIfWhitespace } from "@/lib/utils";
-import { IResquestMessageHistory } from "@/services/types";
-import { useAuthStore } from "@/zustand-store/authStore";
 import { useChatStore } from "@/zustand-store/chatStore";
 import { ArrowUp, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { useSessionStore } from "@/zustand-store/sessionStore";
 
 const Home = () => {
     const topRef = useRef<HTMLDivElement | null>(null);
     const endRef = useRef<HTMLDivElement | null>(null);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const router = useRouter();
-    const { user, userData } = useAuthStore();
+    const [limitMessages, _] = useState(20);
+    const [offsetMessages, setOffsetMessages] = useState(0);
     const {
         error,
         getHistory,
         isLoading,
-        lastMessage,
         messages,
         sendMessage,
         prompt,
         setPrompt,
     } = useChatStore();
+    const {
+        error: sessionError,
+        isLoading: isSessionLoading,
+        getChatSessions,
+        sessions,
+    } = useSessionStore();
 
     const sugestionPromt1 =
         "Quero falar sobre algo que aconteceu ou sobre meus sintomas de ansiedade";
@@ -53,17 +58,16 @@ const Home = () => {
         );
     })();
 
-    const handleSendMessage = (customPrompt?: string) => {
-        const sessionId =
-            userData?.sessionIds?.length === 0 ? "" : userData?.sessionIds[0];
-        const userIdExt = user?.id;
+    async function handleSendMessage(customPrompt?: string) {
+        if (sessions.length <= 0) await getChatSessions();
+
         const text = customPrompt ?? prompt;
-        sendMessage(sessionId, userIdExt, text, scrollToBottom);
+        sendMessage(sessions[0].id, text, scrollToBottom);
 
         setTimeout(() => {
             scrollToBottom();
         }, 500);
-    };
+    }
 
     const scrollToTop = () => {
         topRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -82,14 +86,18 @@ const Home = () => {
     };
 
     function getHistoryTrigger() {
-        if (userData?.sessionIds && userData.sessionIds.length > 0) {
-            const request: IResquestMessageHistory = {
-                session_id: userData.sessionIds[0],
-                take: 10,
-                last_message_id: lastMessage?.id,
-            };
-            getHistory(request, messages);
-        }
+        if (sessions.length <= 0) return getChatSessions();
+
+        getHistory(
+            messages,
+            {
+                session_id: sessions[0].id,
+            },
+            {
+                limit: limitMessages,
+                offset: offsetMessages,
+            },
+        ).then(() => setOffsetMessages(offsetMessages + limitMessages));
     }
 
     useEffect(() => {
@@ -97,17 +105,21 @@ const Home = () => {
     }, []);
 
     useEffect(() => {
-        if (
-            userData?.sessionIds &&
-            userData.sessionIds.length > 0 &&
-            messages.length === 0
-        ) {
-            const request: IResquestMessageHistory = {
-                session_id: userData.sessionIds[0],
-                take: 50,
-            };
-            getHistory(request, messages);
+        if (sessions.length <= 0) {
+            getChatSessions();
+            return;
         }
+
+        getHistory(
+            messages,
+            {
+                session_id: sessions[0].id,
+            },
+            {
+                limit: limitMessages,
+                offset: offsetMessages,
+            },
+        ).then(() => setOffsetMessages(offsetMessages + limitMessages));
     }, []);
 
     useEffect(() => {
@@ -157,7 +169,7 @@ const Home = () => {
                     <MessageBubble
                         messages={messages}
                         onClick={getHistoryTrigger}
-                        loading={isLoading}
+                        loading={isLoading || isSessionLoading}
                     />
                     {isLoading && (
                         <div className="mt-3 flex items-center self-start gap-3">
@@ -167,7 +179,7 @@ const Home = () => {
                             <Sparkles size={25} className="text-purple-300" />
                         </div>
                     )}
-                    {error && (
+                    {(error || sessionError) && (
                         <AlertToastComponent
                             helperText={
                                 "Ocorreu um erro ao tentar enviar a mensagem, mas você pode tentar novamente."

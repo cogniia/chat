@@ -1,19 +1,32 @@
-import { getMessagesHistory, sendMessageToAI } from '@/services/chatService'
-import { IResponseMessageFromAI, IResquestMessageHistory } from '@/services/types'
-import { create } from 'zustand'
+import { ChatMessage } from "@/api/chat-message/entity/chat-message.entity";
+import { getChatMessages } from "@/api/chat-message/service/main";
+import { sendMessageToAI } from "@/api/chat/service/main";
+import { DateOrder, DateOrderEnum } from "@/api/common/model/date-order.model";
+import { Paginate } from "@/api/common/model/paginate.model";
+import { WhereDate } from "@/api/common/model/where-date.model";
+import { create } from "zustand";
 
 type Store = {
-    isLoading: boolean
-    error: boolean
-    getHistory: (request: IResquestMessageHistory, currentMessages: IResponseMessageFromAI[]) => void
-    messages: IResponseMessageFromAI[]
-    currentMessages: IResponseMessageFromAI[]
-    lastMessage: IResponseMessageFromAI | null
-    sendMessage: (sessionId: string | undefined, userIdExt: string | undefined, prompt: string, scroll: () => void) => void
-    prompt: string
-    setPrompt: (prompt: string) => void
-    clearData: () => void
-}
+    isLoading: boolean;
+    error: boolean;
+    getHistory: (
+        currentMessages: ChatMessage[],
+        query?: Partial<ChatMessage>,
+        pagination?: Paginate,
+        order?: DateOrder,
+        whereDate?: WhereDate,
+    ) => Promise<void>;
+    messages: ChatMessage[];
+    currentMessages: ChatMessage[];
+    sendMessage: (
+        sessionId: string | undefined,
+        prompt: string,
+        scroll: () => void,
+    ) => void;
+    prompt: string;
+    setPrompt: (prompt: string) => void;
+    clearData: () => void;
+};
 
 export const useChatStore = create<Store>((set) => ({
     isLoading: false,
@@ -21,42 +34,59 @@ export const useChatStore = create<Store>((set) => ({
     messages: [],
     currentMessages: [],
     lastMessage: null,
-    prompt: '',
-    setPrompt: (prompt: string) => { set({ prompt }) },
-    clearData: () => {
-        set({ messages: [], currentMessages: [], lastMessage: null, prompt: '', error: false, isLoading: false })
+    prompt: "",
+    setPrompt: (prompt: string) => {
+        set({ prompt });
     },
-    getHistory: async (request: IResquestMessageHistory, currentMessages: IResponseMessageFromAI[]) => {
+    clearData: () => {
+        set({
+            messages: [],
+            currentMessages: [],
+            prompt: "",
+            error: false,
+            isLoading: false,
+        });
+    },
+    getHistory: async (
+        currentMessages: ChatMessage[] = [],
+        query: Partial<ChatMessage> = {},
+        pagination: Paginate = { limit: 20, offset: 0 },
+        order: DateOrder = { created_at: DateOrderEnum.desc },
+        whereDate: WhereDate = {},
+    ) => {
         set({ isLoading: true, error: false });
 
         try {
-            const response = await getMessagesHistory(request);
-            const messages: IResponseMessageFromAI[] = response?.data;
-            const lastMessage = messages[messages.length - 1];
+            const messages = (
+                await getChatMessages(query, pagination, order, whereDate)
+            ).reverse();
 
             if (currentMessages.length > 0) {
-                set({ messages: [...messages, ...currentMessages], lastMessage });
+                set({
+                    messages: [...currentMessages, ...messages],
+                });
             } else {
-                set({ messages, lastMessage });
+                set({ messages });
             }
-
-
         } catch (ex) {
             set({ error: true });
         } finally {
             set({ isLoading: false });
         }
     },
-    sendMessage: async (sessionId: string | undefined, userIdExt: string | undefined, prompt: string) => {
+    sendMessage: async (sessionId: string | undefined, prompt: string) => {
         set((state) => ({
             isLoading: true,
             error: false,
             messages: [
                 ...state.messages,
                 {
-                    sender_type: 'User',
-                    session_id: sessionId,
-                    user_id_ext: '5',
+                    id: "",
+                    created_at: new Date(),
+                    updated_at: new Date(),
+                    user_id: "",
+                    session_id: sessionId || "",
+                    sender_type: "User",
                     text: prompt,
                 },
             ],
@@ -64,22 +94,18 @@ export const useChatStore = create<Store>((set) => ({
 
         try {
             const response = await sendMessageToAI({
-                create_session: sessionId === '',
                 session_id: sessionId,
-                user_id_ext: userIdExt,
                 text: prompt,
-                sender_type: 'user',
             });
 
-            const aiMessage = response?.data;
+            const aiMessage = response;
 
             set((state) => ({
                 messages: [...state.messages, aiMessage],
-                prompt: '',
+                prompt: "",
             }));
 
-            scroll()
-
+            scroll();
         } catch (e) {
             set((state) => ({
                 messages: state.messages.slice(0, -1),

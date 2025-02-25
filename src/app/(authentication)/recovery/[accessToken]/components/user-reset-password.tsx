@@ -6,11 +6,12 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { AlertComponent } from "./alert";
-import { login, me, updateMe } from "@/services/authService";
+import { me, update } from "@/api/user/service/main";
 import { useParams, useRouter } from "next/navigation";
 import { AlertDialogComponent } from "@/components/alertComponent";
 import Cookies from "js-cookie";
 import { useAuthStore } from "@/zustand-store/authStore";
+import { login, startAuthCycle } from "@/api/auth/service/main";
 
 interface UserResetPasswordFormProps
     extends React.HTMLAttributes<HTMLDivElement> {}
@@ -38,19 +39,18 @@ export function UserResetPasswordForm({
         setIsLoading(true);
         setShowError(false);
         try {
-            useAuthStore.getState().setCurrentUserData({
+            useAuthStore.getState().setTokens({
                 token:
                     typeof accessToken === "string"
                         ? accessToken
                         : accessToken.join(),
-                sessionIds: [],
             });
-            await updateMe({ password });
+            await update({ password });
             await me();
             // setApiMessageResponse(response?.data?.message);
             setShowAlert(true);
             setTimeout(async () => {
-                await login({
+                await startAuthCycle({
                     email: useAuthStore.getState().user?.email || "",
                     password,
                 }).then(() => router.refresh());

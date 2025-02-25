@@ -1,16 +1,15 @@
 "use client";
 
 import * as React from "react";
-
 import { cn, validateEmail } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { UserRecoveryForm } from "./user-recovery-form";
 import { fadeBackgroundControllStore } from "@/zustand-store/fade-backgroung";
-import { login } from "@/services/authService";
 import { useRouter } from "next/navigation";
 import { AlertToastComponent } from "../../../../components/alert";
+import { startAuthCycle } from "@/api/auth/service/main";
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -38,7 +37,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
     async function onSubmitLogin(event: React.SyntheticEvent) {
         event.preventDefault();
         setIsLoading(true);
-        await login({ email, password })
+        await startAuthCycle({ email, password })
             .then(() => {
                 setIsLoading(false);
                 router.replace("/");
@@ -130,4 +129,3 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
         </>
     );
 }
-

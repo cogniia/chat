@@ -1,27 +1,17 @@
+import { LoginResponse } from "@/api/auth/model/login-response.model";
+import { User } from "@/api/user/entity/user.entity";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 interface AuthState {
     user: User | null;
-    userData: UserData | null;
+    tokens: Partial<LoginResponse> | null;
 
     setCurrentUser: (user: User) => void;
     clearCurrentUser: () => void;
 
-    setCurrentUserData: (user: UserData) => void;
-    clearCurrentUserData: () => void;
-}
-
-export interface User {
-    id: string;
-    name?: string;
-    email: string;
-    password?: string;
-}
-
-export interface UserData {
-    token?: string;
-    sessionIds: string[];
+    setTokens: (tokens: Partial<LoginResponse>) => void;
+    clearTokens: () => void;
 }
 
 export const useAuthStore = create(
@@ -31,10 +21,10 @@ export const useAuthStore = create(
             setCurrentUser: (user: User) => set(() => ({ user })),
             clearCurrentUser: () => set(() => ({ user: null })),
 
-            userData: null,
-            setCurrentUserData: (userData: UserData) =>
-                set(() => ({ userData })),
-            clearCurrentUserData: () => set(() => ({ user: null })),
+            tokens: null,
+            setTokens: (tokens: Partial<LoginResponse>) =>
+                set(() => ({ tokens })),
+            clearTokens: () => set(() => ({ user: null })),
         }),
         {
             name: "auth-storage",
