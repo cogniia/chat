@@ -83,10 +83,27 @@ const Home = () => {
     const handleKeyDown = (
         event: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>,
     ) => {
-        if (event.key === "Enter" && prompt !== "") {
-            handleSendMessage();
-        }
+        if (event.key !== "Enter" || prompt === "")
+            return resizeTextarea(event.target as HTMLTextAreaElement);
+
+        // If Shift + Enter is pressed, allow normal enter behavior (e.g., new line in textarea)
+        // Resize the textarea to match its content height
+        if (event.shiftKey)
+            return resizeTextarea(event.target as HTMLTextAreaElement);
+
+        // If only Enter is pressed, trigger the send message function
+        event.preventDefault(); // Prevent default behavior (e.g., new line in textarea)
+        handleSendMessage();
     };
+
+    function resizeTextarea(textarea: HTMLTextAreaElement) {
+        // Reset height to auto to calculate the new height based on content
+        textarea.style.height = "auto";
+
+        // Set the height to the scroll height, but clamp it between 66px and 500px
+        const newHeight = Math.min(Math.max(textarea.scrollHeight, 66), 500);
+        textarea.style.height = `${newHeight}px`;
+    }
 
     function getHistoryTrigger() {
         if (sessions.length <= 0) return getChatSessions();
