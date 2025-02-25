@@ -1,21 +1,25 @@
+import { ChatMessage } from "@/api/chat-message/entity/chat-message.entity";
+import { getChatMessages } from "@/api/chat-message/service/main";
 import { sendMessageToAI } from "@/api/chat/service/main";
-import { getMessagesHistory } from "@/api/chatService";
-import { IResponseMessageFromAI, IResquestMessageHistory } from "@/api/types";
+import { DateOrder, DateOrderEnum } from "@/api/common/model/date-order.model";
+import { Paginate } from "@/api/common/model/paginate.model";
+import { WhereDate } from "@/api/common/model/where-date.model";
 import { create } from "zustand";
 
 type Store = {
     isLoading: boolean;
     error: boolean;
     getHistory: (
-        request: IResquestMessageHistory,
-        currentMessages: IResponseMessageFromAI[],
-    ) => void;
-    messages: IResponseMessageFromAI[];
-    currentMessages: IResponseMessageFromAI[];
-    lastMessage: IResponseMessageFromAI | null;
+        currentMessages: ChatMessage[],
+        query?: Partial<ChatMessage>,
+        pagination?: Paginate,
+        order?: DateOrder,
+        whereDate?: WhereDate,
+    ) => Promise<void>;
+    messages: ChatMessage[];
+    currentMessages: ChatMessage[];
     sendMessage: (
         sessionId: string | undefined,
-        userIdExt: string | undefined,
         prompt: string,
         scroll: () => void,
     ) => void;
@@ -38,30 +42,34 @@ export const useChatStore = create<Store>((set) => ({
         set({
             messages: [],
             currentMessages: [],
-            lastMessage: null,
             prompt: "",
             error: false,
             isLoading: false,
         });
     },
     getHistory: async (
-        request: IResquestMessageHistory,
-        currentMessages: IResponseMessageFromAI[],
+        currentMessages: ChatMessage[] = [],
+        query: Partial<ChatMessage> = {},
+        pagination: Paginate = { limit: 20, offset: 0 },
+        order: DateOrder = { created_at: DateOrderEnum.desc },
+        whereDate: WhereDate = {},
     ) => {
         set({ isLoading: true, error: false });
 
         try {
-            const response = await getMessagesHistory(request);
-            const messages: IResponseMessageFromAI[] = response?.data;
-            const lastMessage = messages[messages.length - 1];
+            const messages = await getChatMessages(
+                query,
+                pagination,
+                order,
+                whereDate,
+            );
 
             if (currentMessages.length > 0) {
                 set({
                     messages: [...messages, ...currentMessages],
-                    lastMessage,
                 });
             } else {
-                set({ messages, lastMessage });
+                set({ messages });
             }
         } catch (ex) {
             set({ error: true });
@@ -75,12 +83,12 @@ export const useChatStore = create<Store>((set) => ({
             error: false,
             messages: [
                 ...state.messages,
-                {
-                    sender_type: "User",
-                    session_id: sessionId,
-                    user_id_ext: "5",
-                    text: prompt,
-                },
+                // {
+                //     sender_type: "User",
+                //     session_id: sessionId,
+                //     user_id_ext: "5",
+                //     text: prompt,
+                // },
             ],
         }));
 

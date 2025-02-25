@@ -1,17 +1,17 @@
 import { coreApi } from "@/api/api";
-import { ChatMessage } from "../entity/chat-message.entity";
 import { Paginate } from "@/api/common/model/paginate.model";
 import { DateOrder } from "@/api/common/model/date-order.model";
 import { WhereDate } from "@/api/common/model/where-date.model";
+import { ChatSession } from "../entity/chat-session.entity";
 
-export async function getChatMessages(
-    query: Partial<ChatMessage> = {},
+export async function getChatSessions(
+    query: Partial<ChatSession> = {},
     pagination: Paginate = { limit: 10, offset: 0 },
     order: DateOrder = {},
     whereDate: WhereDate = {},
-): Promise<ChatMessage[]> {
+): Promise<ChatSession[]> {
     return (
-        await coreApi.get<ChatMessage[]>("/chat-message", {
+        await coreApi.get<ChatSession[]>("/chat-session", {
             params: {
                 ...query,
                 ...pagination,

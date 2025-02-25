@@ -4,5 +4,5 @@ export interface ChatMessage extends Audit {
     session_id: string;
     user_id: string;
     text: string;
-    thread_id: string;
+    sender_type: string;
 }
