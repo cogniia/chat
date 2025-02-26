@@ -80,12 +80,18 @@ const Home = () => {
         endRef.current?.scrollIntoView({ behavior: "smooth" });
     };
 
-    const handleKeyDown = (
+    const handleKeyDown = async (
         event: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>,
     ) => {
-        if (event.key === "Enter" && prompt !== "") {
-            handleSendMessage();
-        }
+        if (event.key !== "Enter" || prompt === "") return;
+
+        // If Shift + Enter is pressed, allow normal enter behavior (e.g., new line in textarea)
+        // Resize the textarea to match its content height
+        if (event.shiftKey) return;
+
+        // If only Enter is pressed, trigger the send message function
+        event.preventDefault(); // Prevent default behavior (e.g., new line in textarea)
+        await handleSendMessage();
     };
 
     function getHistoryTrigger() {
@@ -219,9 +225,9 @@ const Home = () => {
             <Textarea
                 ref={textareaRef}
                 value={prompt}
-                onChange={(event) =>
-                    setPrompt(removeIfWhitespace(event.target.value))
-                }
+                onChange={(event) => {
+                    setPrompt(removeIfWhitespace(event.target.value));
+                }}
                 onSend={() => handleSendMessage()}
                 disabled={isLoading}
                 onKeyDown={handleKeyDown}

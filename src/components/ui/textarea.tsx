@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { cn } from "@/lib/utils";
+import { cn, resizeTextarea } from "@/lib/utils";
 import { ArrowUpCircle } from "lucide-react";
 
 export interface TextareaProps
@@ -12,6 +12,8 @@ export interface TextareaProps
 
 const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
     ({ className, ...props }, ref) => {
+        const textareaRef = React.useRef<HTMLTextAreaElement>(null);
+
         return (
             <div className="flex flex-row relative items-center justify-center max-w-[630px] w-full">
                 <textarea
@@ -19,7 +21,12 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
                         "flex min-h-[44px] max-w-[630px] max-h-52 w-full rounded-3xl border border-grey-700 bg-background pl-6 pr-14 py-2 text-[16px] placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-300 focus-visible:border-none focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 resize-none",
                         className,
                     )}
-                    ref={ref}
+                    ref={(el) => {
+                        if (el) {
+                            textareaRef.current = el;
+                            resizeTextarea(el);
+                        }
+                    }}
                     disabled={props.disabled}
                     {...props}
                 />
