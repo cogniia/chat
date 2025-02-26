@@ -86,7 +86,6 @@ const Home = () => {
         if (event.key !== "Enter" || prompt === "") return;
 
         // If Shift + Enter is pressed, allow normal enter behavior (e.g., new line in textarea)
-        // Resize the textarea to match its content height
         if (event.shiftKey) return;
 
         // If only Enter is pressed, trigger the send message function
