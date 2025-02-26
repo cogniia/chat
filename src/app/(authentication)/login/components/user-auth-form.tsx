@@ -37,12 +37,12 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
     async function onSubmitLogin(event: React.SyntheticEvent) {
         event.preventDefault();
         setIsLoading(true);
-        await startAuthCycle({ email, password })
+        await startAuthCycle({ email: email.toLowerCase(), password })
             .then(() => {
                 setIsLoading(false);
                 router.replace("/");
             })
-            .catch((e) => {
+            .catch(() => {
                 setIsLoading(false);
                 setShowDialog(true);
             });
