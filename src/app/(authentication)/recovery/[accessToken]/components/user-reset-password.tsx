@@ -11,7 +11,7 @@ import { useParams, useRouter } from "next/navigation";
 import { AlertDialogComponent } from "@/components/alertComponent";
 import Cookies from "js-cookie";
 import { useAuthStore } from "@/zustand-store/authStore";
-import { login, startAuthCycle } from "@/api/auth/service/main";
+import { startAuthCycle } from "@/api/auth/service/main";
 
 interface UserResetPasswordFormProps
     extends React.HTMLAttributes<HTMLDivElement> {}
@@ -51,7 +51,8 @@ export function UserResetPasswordForm({
             setShowAlert(true);
             setTimeout(async () => {
                 await startAuthCycle({
-                    email: useAuthStore.getState().user?.email || "",
+                    email:
+                        useAuthStore.getState().user?.email.toLowerCase() || "",
                     password,
                 }).then(() => router.refresh());
             });

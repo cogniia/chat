@@ -107,7 +107,9 @@ export function UserRegisterForm({
                             autoComplete="email"
                             autoCorrect="off"
                             disabled={isLoading}
-                            onChange={(e) => setEmail(e.target.value)}
+                            onChange={(e) =>
+                                setEmail(e.target.value.toLowerCase())
+                            }
                         />
                     </div>
                     <div className="grid gap-2">
