@@ -1,7 +1,7 @@
 import { ChatMessage } from "@/api/chat-message/entity/chat-message.entity";
 import { getChatMessages } from "@/api/chat-message/service/main";
 import { sendMessageToAI } from "@/api/chat/service/main";
-import { DateOrder, DateOrderEnum } from "@/api/common/model/date-order.model";
+import { DateOrderEnum } from "@/api/common/model/date-order.model";
 import { Paginate } from "@/api/common/model/paginate.model";
 import { WhereDate } from "@/api/common/model/where-date.model";
 import { create } from "zustand";
@@ -13,7 +13,6 @@ type Store = {
         currentMessages: ChatMessage[],
         query?: Partial<ChatMessage>,
         pagination?: Paginate,
-        order?: DateOrder,
         whereDate?: WhereDate,
     ) => Promise<void>;
     messages: ChatMessage[];
@@ -51,19 +50,23 @@ export const useChatStore = create<Store>((set) => ({
         currentMessages: ChatMessage[] = [],
         query: Partial<ChatMessage> = {},
         pagination: Paginate = { limit: 20, offset: 0 },
-        order: DateOrder = { created_at: DateOrderEnum.desc },
         whereDate: WhereDate = {},
     ) => {
         set({ isLoading: true, error: false });
 
         try {
             const messages = (
-                await getChatMessages(query, pagination, order, whereDate)
+                await getChatMessages(
+                    query,
+                    pagination,
+                    { created_at: DateOrderEnum.desc },
+                    whereDate,
+                )
             ).reverse();
 
             if (currentMessages.length > 0) {
                 set({
-                    messages: [...currentMessages, ...messages],
+                    messages: [...messages, ...currentMessages],
                 });
             } else {
                 set({ messages });

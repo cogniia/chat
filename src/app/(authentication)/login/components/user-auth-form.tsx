@@ -40,7 +40,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
         await startAuthCycle({ email: email.toLowerCase(), password })
             .then(() => {
                 setIsLoading(false);
-                router.replace("/");
+                router.push("/");
             })
             .catch(() => {
                 setIsLoading(false);

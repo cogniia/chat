@@ -8,7 +8,6 @@ import { removeIfWhitespace } from "@/lib/utils";
 import { useChatStore } from "@/zustand-store/chatStore";
 import { ArrowUp, Sparkles } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useSessionStore } from "@/zustand-store/sessionStore";
 
@@ -16,8 +15,6 @@ const Home = () => {
     const topRef = useRef<HTMLDivElement | null>(null);
     const endRef = useRef<HTMLDivElement | null>(null);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
-    const router = useRouter();
-    const [limitMessages, _] = useState(20);
     const [offsetMessages, setOffsetMessages] = useState(0);
     const {
         error,
@@ -35,6 +32,8 @@ const Home = () => {
         createChatSession,
         sessions,
     } = useSessionStore();
+
+    const limitMessages = 20;
 
     const sugestionPromt1 =
         "Quero falar sobre algo que aconteceu ou sobre meus sintomas de ansiedade";
@@ -93,10 +92,10 @@ const Home = () => {
         await handleSendMessage();
     };
 
-    function getHistoryTrigger() {
-        if (sessions.length <= 0) return getChatSessions();
+    async function getHistoryTrigger() {
+        if (sessions.length <= 0) return await getChatSessions();
 
-        getHistory(
+        await getHistory(
             messages,
             {
                 session_id: sessions[0].id,
@@ -113,11 +112,14 @@ const Home = () => {
     }, []);
 
     useEffect(() => {
-        if (sessions.length <= 0) {
-            getChatSessions();
+        if (sessions.length <= 0) getChatSessions();
+    }, []);
+
+    useEffect(() => {
+        if (sessions.length === 0) {
+            console.log("No session available");
             return;
         }
-
         getHistory(
             messages,
             {
@@ -128,17 +130,11 @@ const Home = () => {
                 offset: offsetMessages,
             },
         ).then(() => setOffsetMessages(offsetMessages + limitMessages));
-    }, []);
+    }, [sessions]);
 
     useEffect(() => {
         scrollToBottom();
     }, [messages]);
-
-    useEffect(() => {
-        if (messages.length === 0) {
-            router.refresh();
-        }
-    }, []);
 
     useEffect(() => {
         const observer = new IntersectionObserver(
