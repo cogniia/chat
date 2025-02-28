@@ -4,7 +4,7 @@ import { StatusCodeEnum } from "./types";
 import { logout } from "./auth/service/main";
 
 const coreApi = axios.create({
-    baseURL: process.env.CORE_API_URL || "https://core-api-msqf.onrender.com",
+    baseURL: process.env.CORE_API_URL || "https://coreapi.cogniia.com.br",
     headers: {
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin": "*",
