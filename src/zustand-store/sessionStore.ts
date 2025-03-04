@@ -8,7 +8,7 @@ import { DateOrder, DateOrderEnum } from "@/api/common/model/date-order.model";
 import { Paginate } from "@/api/common/model/paginate.model";
 import { WhereDate } from "@/api/common/model/where-date.model";
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { createJSONStorage, persist } from "zustand/middleware";
 
 interface SessionState {
     sessions: ChatSession[];
@@ -81,7 +81,8 @@ export const useSessionStore = create(
         }),
         {
             name: "session-storage",
-            getStorage: () => localStorage,
+            // getStorage: () => localStorage,
+            storage: createJSONStorage(() => localStorage),
         },
     ),
 );
