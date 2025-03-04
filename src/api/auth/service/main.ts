@@ -48,6 +48,7 @@ export async function startAuthCycle({
     password,
 }: LoginRequest): Promise<void> {
     try {
+        logout();
         await login({ email, password });
         setInterval(async () => await refreshToken(), 1000 * 30 * 10);
     } catch (error) {
