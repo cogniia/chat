@@ -1,14 +1,20 @@
-'use client';
+"use client";
 import SideNavbar from "@/components/nav/SideNavbar";
-import Cookies from 'js-cookie';
+import { useAuthStore } from "@/zustand-store/authStore";
+import Cookies from "js-cookie";
 
-export default function ClientRoot({ children }: { children: React.ReactNode }) {
-    const token = Cookies.get('token');
+export default function ClientRoot({
+    children,
+}: {
+    children: React.ReactNode;
+}) {
+    const token = Cookies.get("token");
+    const { user } = useAuthStore();
 
     return (
         <>
             {/* sidebar */}
-            {token && <SideNavbar />}
+            {token && user && <SideNavbar />}
             {/* main page */}
             <div className="w-full">{children}</div>
         </>
