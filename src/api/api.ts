@@ -34,7 +34,7 @@ coreApi.interceptors.response.use(
 );
 
 const apiAI = axios.create({
-    baseURL: process.env.AI_URL || "https://cogniia-ai.onrender.com",
+    baseURL: process.env.AI_URL || "https://ai.cogniia.com.br",
     headers: {
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin": "*",
