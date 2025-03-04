@@ -9,6 +9,7 @@ const coreApi = axios.create({
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin": "*",
     },
+    timeout: 20000,
 });
 
 coreApi.interceptors.request.use((config) => {
@@ -39,6 +40,7 @@ const apiAI = axios.create({
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin": "*",
     },
+    timeout: 20000,
 });
 
 apiAI.interceptors.request.use((config) => {
