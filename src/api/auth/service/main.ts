@@ -61,11 +61,12 @@ export function resetPassword(email: string) {
     return coreApi.post("/user/auth/reset-password", { email });
 }
 
-export const logout = (): void => {
+export function logout(): void {
     useAuthStore.getState().clearCurrentUser();
     useAuthStore.getState().clearTokens();
     useChatStore.getState().clearData();
     useSessionStore.getState().clearChatSessions();
 
     Cookie.remove("token");
-};
+    Cookie.remove("refresh_token");
+}
