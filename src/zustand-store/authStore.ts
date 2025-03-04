@@ -1,7 +1,7 @@
 import { LoginResponse } from "@/api/auth/model/login-response.model";
 import { User } from "@/api/user/entity/user.entity";
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { createJSONStorage, persist } from "zustand/middleware";
 
 interface AuthState {
     user: User | null;
@@ -28,7 +28,8 @@ export const useAuthStore = create(
         }),
         {
             name: "auth-storage",
-            getStorage: () => localStorage,
+            // getStorage: () => localStorage,
+            storage: createJSONStorage(() => localStorage),
         },
     ),
 );
