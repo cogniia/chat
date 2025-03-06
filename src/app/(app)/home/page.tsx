@@ -109,7 +109,8 @@ const Home = () => {
 
     useEffect(() => {
         textareaRef?.current?.focus();
-    }, []);
+        scrollToBottom();
+    }, [messages]);
 
     useEffect(() => {
         if (sessions.length <= 0) getChatSessions();
@@ -133,10 +134,6 @@ const Home = () => {
     }, [sessions]);
 
     useEffect(() => {
-        scrollToBottom();
-    }, [messages]);
-
-    useEffect(() => {
         const observer = new IntersectionObserver(
             ([entry]) => {
                 setIsTopVisible(entry.isIntersecting);
@@ -149,9 +146,7 @@ const Home = () => {
         }
 
         return () => {
-            if (topRef.current) {
-                observer.unobserve(topRef.current);
-            }
+            if (topRef.current) observer.unobserve(topRef.current);
         };
     }, []);
 

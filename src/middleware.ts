@@ -33,14 +33,11 @@ export default async function middleware(request: NextRequest) {
     }
 
     // Allow access to the home page.
-    if (request.nextUrl.pathname === "/") {
-        return NextResponse.next();
-    }
+    if (request.nextUrl.pathname === "/") return NextResponse.next();
 
     // If a valid token is present but the user is trying to access an unauthenticated route, redirect them to home.
-    if (token && unAuthPaths.find((v) => v === request.nextUrl.pathname)) {
+    if (token && unAuthPaths.find((v) => v === request.nextUrl.pathname))
         return NextResponse.redirect(homeURL);
-    }
 
     return NextResponse.next();
 }

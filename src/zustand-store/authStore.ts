@@ -7,7 +7,7 @@ interface AuthState {
     user: User | null;
     tokens: Partial<LoginResponse> | null;
 
-    setCurrentUser: (user: User) => void;
+    setCurrentUser: (user: User | undefined) => void;
     clearCurrentUser: () => void;
 
     setTokens: (tokens: Partial<LoginResponse>) => void;
@@ -18,7 +18,7 @@ export const useAuthStore = create(
     persist<AuthState>(
         (set) => ({
             user: null,
-            setCurrentUser: (user: User) => set(() => ({ user })),
+            setCurrentUser: (user?: User) => set(() => ({ user })),
             clearCurrentUser: () => set(() => ({ user: null })),
 
             tokens: null,
