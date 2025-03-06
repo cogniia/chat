@@ -4,16 +4,17 @@ import { Create } from "../model/create.model";
 import { startAuthCycle } from "@/api/auth/service/main";
 import { User } from "../entity/user.entity";
 
-export const me = async (token?: string): Promise<void> => {
+export async function me(token?: string): Promise<void> {
     try {
         const response = await getMe(token);
 
         useAuthStore.getState().setCurrentUser(response);
     } catch (error) {
         console.error("Erro ao buscar usuário", error);
+        useAuthStore.getState().setCurrentUser(undefined);
         throw error;
     }
-};
+}
 
 export async function getMe(token?: string): Promise<User> {
     try {
