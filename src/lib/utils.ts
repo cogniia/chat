@@ -17,22 +17,20 @@ export const validatePassword = (
     password: string,
     passwordConfirmation: string,
 ): ValidationResult => {
-    if (password.length < 8) {
+    if (password.length < 8)
         return {
             isValid: false,
             message: "A senha deve ter no mínimo 8 caracteres.",
             id: 1,
         };
-    }
 
-    if (password !== passwordConfirmation && passwordConfirmation.length > 0) {
+    if (password !== passwordConfirmation && passwordConfirmation.length > 0)
         return {
             isValid: false,
             message:
                 "As senhas não combinam! Por favor confira os campos e tente novamente.",
             id: 2,
         };
-    }
 
     return {
         isValid: true,
@@ -42,9 +40,7 @@ export const validatePassword = (
 };
 
 export function removeIfWhitespace(input: string): string {
-    if (input.trim() === "") {
-        return "";
-    }
+    if (input.trim() === "") return "";
     return input;
 }
 
@@ -52,14 +48,12 @@ export function capitalizeFirstLetter(string: string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-export function formatDate(date: Date, dateFormat = "dd MMM yyyy - hh:mm") {
+export function formatDate(date: Date, dateFormat = "dd MMM yyyy - HH:mm") {
     const formattedDate = format(new Date(date), dateFormat);
 
     const parts = formattedDate.split(" ");
 
-    if (parts.length !== 3) {
-        return formattedDate;
-    }
+    if (parts.length !== 3) return formattedDate;
 
     const [day, month, year] = parts;
 
@@ -90,11 +84,8 @@ export function mergeRefs<T>(
     return (value: T) => {
         refs.forEach((ref) => {
             if (!ref) return;
-            if (typeof ref === "function") {
-                ref(value);
-            } else {
-                (ref as React.MutableRefObject<T | null>).current = value;
-            }
+            if (typeof ref === "function") ref(value);
+            else (ref as React.MutableRefObject<T | null>).current = value;
         });
     };
 }
