@@ -5,6 +5,7 @@ import { LoginRequest } from "@/api/auth/model/login-request.model";
 import { LoginResponse } from "@/api/auth/model/login-response.model";
 import { useChatStore } from "@/zustand-store/chatStore";
 import { useSessionStore } from "@/zustand-store/sessionStore";
+import { me } from "@/api/user/service/main";
 
 export async function login({ email, password }: LoginRequest): Promise<void> {
     try {
@@ -38,6 +39,8 @@ export async function refreshToken(): Promise<void> {
         Cookie.set("token", token ?? "");
         Cookie.set("refresh_token", refresh_token ?? "");
     } catch (error) {
+        Cookie.set("token", "");
+        Cookie.set("refresh_token", "");
         console.error("Erro ao fazer login", error);
         throw error;
     }
@@ -50,6 +53,7 @@ export async function startAuthCycle({
     try {
         logout();
         await login({ email, password });
+        await me();
         setInterval(async () => await refreshToken(), 1000 * 30 * 10);
     } catch (error) {
         throw error;
